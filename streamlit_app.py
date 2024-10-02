@@ -11,12 +11,12 @@ from gcsa.recurrence import Recurrence, DAILY, SU, SA
 from google.oauth2 import service_account
 from beautiful_date import Jan, Apr, Sept
 
+from pydantic import BaseModel, Field
 
-# Deviations from documentation:
-# 1- Creating service account and then creating a key for it. (because we the app can't create a server for itself).
-# 2- Adding the service account email to your calendar as a user with event edit permissions (from Settings and Sharing) (because we the app can't create a server for itself).
-# 3- Using service_account.Credentials.from_service_account_info to get the credenntials instead of credentials_path (for security reasons).
-# 4- Putting the JSON in StreamLit secrets and using json.loads rather than uploading the file to github (for security reasons).
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(model="gpt-3.5-turbo-0125")
+
 
 # Get the credintials from Secrets.
 credentials = service_account.Credentials.from_service_account_info(
@@ -26,10 +26,13 @@ credentials = service_account.Credentials.from_service_account_info(
 
 # Create the GoogleCalendar.
 calendar = GoogleCalendar(credentials=credentials)
+    
 
-# Get the list of events.
-c = list(calendar.get_events(calendar_id="mndhamod@gmail.com"))
+class GetEvents(BaseModel):
+    """Returns events from my calendar"""
+     return list(calendar.get_events(calendar_id="mndhamod@gmail.com"))
 
-# It erate through the events and show them.
-for event in c:
-    st.write(event)
+
+llm_with_tools = llm.bind_tools([GetEvents])
+
+st.write(llm_with_tools("What is the first event?")
