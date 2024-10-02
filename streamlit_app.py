@@ -14,6 +14,9 @@ from beautiful_date import Jan, Apr, Sept
 from pydantic import BaseModel, Field
 
 from langchain_openai import ChatOpenAI
+import os
+
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 llm = ChatOpenAI(model="gpt-3.5-turbo-0125")
 
