@@ -2,18 +2,11 @@ import streamlit as st
 from gcsa.event import Event
 from gcsa.google_calendar import GoogleCalendar
 from gcsa.recurrence import Recurrence, DAILY, SU, SA
-from langchain_core.tools import Tool
 
 from beautiful_date import Jan, Apr, Sept
 import json
-from gcsa.event import Event
-from gcsa.google_calendar import GoogleCalendar
-from gcsa.recurrence import Recurrence, DAILY, SU, SA
 from google.oauth2 import service_account
-from beautiful_date import Jan, Apr, Sept
-
-from pydantic import BaseModel, Field
-from langchain_core.tools import tool
+from langchain_core.tools import Tool  # Use the Tool object directly
 from langchain_openai import ChatOpenAI
 import os
 
