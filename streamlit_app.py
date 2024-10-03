@@ -174,7 +174,8 @@ if entered_prompt := st.chat_input():
 
     config = {"configurable": {"session_id": "any"}} #, 'callbacks': [ConsoleCallbackHandler()]
     # response = chain_with_history.invoke({"question": entered_prompt}, config)
-    response = agent.invoke({"input": entered_prompt}, {'callbacks': [ConsoleCallbackHandler()]})
+    st_callback = StreamlitCallbackHandler(st.container())
+    response = agent.invoke({"input": entered_prompt}, {"callbacks": [st_callback])#, {'callbacks': [ConsoleCallbackHandler()]})
     # response = agent.invoke({"messages": [HumanMessage(content=entered_prompt)]})
 
     # Add AI response.
