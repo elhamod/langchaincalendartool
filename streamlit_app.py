@@ -52,8 +52,7 @@ def get_events_tool(dummy):
 event_tool = Tool(
     name="GetEvents",
     func=get_events_tool,
-    description="Useful for getting the list of events from the user's calendar.", 
-    verbose=True
+    description="Useful for getting the list of events from the user's calendar."
 )
 
 #------------
@@ -63,7 +62,17 @@ tools = [event_tool]
 # Create the LLM
 llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
 
+
 agent = create_react_agent(llm, tools )
+agent = AgentExecutor.from_agent_and_tools(
+    agent=_agent,  # type: ignore
+    tools=tools,
+    # early_stopping_method="generate",
+    # callbacks=callbacks, # type: ignore
+    verbose=True,
+    # handle_parsing_errors=True,
+    # return_intermediate_steps=True,
+)
 
 #--------------------
 
@@ -77,6 +86,8 @@ if len(msgs.messages) == 0:
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", "You are an AI chatbot having a conversation with a human."),
+        MessagesPlaceholder(variable_name="chat_history", optional=True),
+        MessagesPlaceholder(variable_name="agent_scratchpad", optional=True),
         MessagesPlaceholder(variable_name="history"),
         ("human", "{question}"),
     ]
