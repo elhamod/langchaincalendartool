@@ -102,7 +102,7 @@ if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
     msgs.add_user_message(prompt)
 
-    config = {"configurable": {"session_id": "any"}'callbacks': [ConsoleCallbackHandler()]}
+    config = {"configurable": {"session_id": "any"}, 'callbacks': [ConsoleCallbackHandler()]}
     response = chain_with_history.invoke({"question": prompt}, config)
 
     # Add AI response.
