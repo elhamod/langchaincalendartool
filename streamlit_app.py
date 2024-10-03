@@ -89,11 +89,11 @@ llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
 
 
 agent = create_react_agent(llm, tools )
-# agent = AgentExecutor.from_agent_and_tools(
-#     agent=agent,  # type: ignore
-#     tools=tools,
-#     verbose=True,
-# )
+agent = AgentExecutor.from_agent_and_tools(
+    agent=agent,  # type: ignore
+    tools=tools,
+    verbose=True,
+)
 
 
 #--------------------
@@ -138,7 +138,8 @@ if prompt := st.chat_input():
     msgs.add_user_message(prompt)
 
     config = {"configurable": {"session_id": "any"}} #, 'callbacks': [ConsoleCallbackHandler()]
-    response = chain_with_history.invoke({"question": prompt}, config)
+    # response = chain_with_history.invoke({"question": prompt}, config)
+    response = agent.invoke({"input": prompt})
 
     # Add AI response.
     response = response["messages"][-1].content
