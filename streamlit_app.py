@@ -2,7 +2,7 @@ import streamlit as st
 from gcsa.event import Event
 from gcsa.google_calendar import GoogleCalendar
 from gcsa.recurrence import Recurrence, DAILY, SU, SA
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplatef
 from beautiful_date import Jan, Apr, Sept
 from langgraph.prebuilt import create_react_agent
 import json
@@ -48,12 +48,15 @@ tools = [event_tool]
 agent = initialize_agent(tools, llm    , verbose=True)
 # agent_executor = create_react_agent(llm, tools )
 
-agent.run("What is the first event?")
-# agent_executor.invoke(
+response = agent.run("What is the first event?")
+# response  = agent_executor.invoke(
 #     {
 #         "input": "What is the first event?"
 #     }
 # )
+
+
+
 
 
 
@@ -93,7 +96,10 @@ agent.run("What is the first event?")
 # prompt = ChatPromptTemplate.from_messages(
 #     [("human", "What is the first event?" )]
 # )
-# st.write(chain.invoke("What is the first event?"))
+
+
+
+st.write(response)
 
 
 
