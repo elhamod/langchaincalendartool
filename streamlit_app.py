@@ -45,15 +45,15 @@ event_tool = Tool(
 
 tools = [event_tool]
 
-# agent = initialize_agent(tools, llm    , verbose=True)
-agent_executor = create_react_agent(llm, tools )
+agent = initialize_agent(tools, llm    , verbose=True)
+# agent_executor = create_react_agent(llm, tools )
 
-# agent.run("What is the first event?")
-agent_executor.invoke(
-    {
-        "input": "What is the first event?"
-    }
-)
+agent.run("What is the first event?")
+# agent_executor.invoke(
+#     {
+#         "input": "What is the first event?"
+#     }
+# )
 
 
 
