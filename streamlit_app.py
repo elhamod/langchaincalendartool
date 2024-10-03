@@ -44,7 +44,7 @@ event_tool = Tool(
 
 tools = [event_tool]
 
-agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+agent = initialize_agent(tools, llm, agent=AgentType.OPENAI_FUNCTIONS , verbose=True)
 
 agent.run("What is the first event?")
 
