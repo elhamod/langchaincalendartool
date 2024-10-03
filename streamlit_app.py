@@ -88,7 +88,7 @@ chain = prompt | agent_executor
 # Queries the LLM with full chat history.
 chain_with_history = RunnableWithMessageHistory(
     chain,
-    lambda session_id: StreamlitChatMessageHistory(key="special_app_key2"),  # Always return the instance created earlier
+    lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
     input_messages_key="question",
     history_messages_key="history",
 )
