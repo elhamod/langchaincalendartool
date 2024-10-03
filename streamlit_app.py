@@ -42,4 +42,4 @@ llm_with_tools = llm.bind_tools([event_tool])
 prompt = ChatPromptTemplate.from_messages(
     [("human", "What is the first event?" )]
 )
-st.write(prompt | llm_with_tools | StrOutputParser())
+st.write(prompt | llm_with_tools))
