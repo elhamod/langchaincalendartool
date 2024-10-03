@@ -45,19 +45,42 @@ calendar = GoogleCalendar(credentials=credentials)
 ### IMPORTANT: Here is an example of a listing event tool. For other features, replicate this code and edit
 
 # Define the tool 
-def get_events_tool(dummy):
+def get_events(dummy):
     return list(calendar.get_events(calendar_id="mndhamod@gmail.com"))
 
 # Create a Tool object 
-event_tool = Tool(
+list_event_tool = Tool(
     name="GetEvents",
-    func=get_events_tool,
+    func=get_events,
     description="Useful for getting the list of events from the user's calendar."
 )
 
 #------------
+
+#-------
+### IMPORTANT: For addign event: 
+
+# Define the tool 
+def add_event(start_date, start_time, length_hours):
+    from beautiful_date import hours
+    start = (start_date)[start_time]
+    end = start + start_time * hours
+    event = Event('Meeting',
+                  start=start,
+                  end=end)
+    return gc.add_event(event)
+
+# Create a Tool object 
+add_event_tool = Tool(
+    name="AddEvent",
+    func=add_event,
+    description="Useful for adding an event with a start date, start time, and length in hours the list of events. Returns whethere addition was successful or failed."
+)
+
+#------------
+
 #IMPORTANT: Update this list with the new tools
-tools = [event_tool]
+tools = [list_event_tool, add_event_tool]
 
 # Create the LLM
 llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
