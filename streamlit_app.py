@@ -102,7 +102,7 @@ if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
 
     config = {"configurable": {"session_id": "any"}}
-    response = chain.invoke({"question": prompt}, config)
+    response = chain.invoke({"question": prompt,         "history": msgs.messages}, config)
 
     # Add AI response.
     response = response["messages"][-1].content
