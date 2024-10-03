@@ -61,8 +61,7 @@ tools = [event_tool]
 # Create the LLM
 llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
 
-agent_executor = create_react_agent(llm, tools )
-agent_executor = AgentExecutor.from_agent_and_tools(agent_executor, tools, verbose=True)
+agent = create_react_agent(llm, tools )
 
 #--------------------
 
@@ -82,14 +81,15 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 # A chain that takes the prompt and processes it through the agent (LLM + tools)
-chain = prompt | agent_executor
+chain = prompt | agent
 
 # Queries the LLM with full chat history.
 chain_with_history = RunnableWithMessageHistory(
     chain,
     lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
     input_messages_key="question",
-    history_messages_key="history"
+    history_messages_key="history", 
+    verbose=True
 )
 
 for msg in msgs.messages:
