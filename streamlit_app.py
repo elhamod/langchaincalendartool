@@ -12,7 +12,7 @@ from google.oauth2 import service_account
 from beautiful_date import Jan, Apr, Sept
 
 from pydantic import BaseModel, Field
-
+from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 import os
 
