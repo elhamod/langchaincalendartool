@@ -38,4 +38,4 @@ event_tool = Tool(
 
 llm_with_tools = llm.bind_tools([event_tool])
 
-st.write(llm_with_tools("What is the first event?"))
+st.write(llm_with_tools.invoke("What is the first event?"))
