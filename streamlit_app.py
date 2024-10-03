@@ -68,7 +68,7 @@ def add_event(start_date, start_time, length_hours):
     event = Event('Meeting',
                   start=start,
                   end=end)
-    r = gc.add_event(event)
+    r = calendar.add_event(event)
     st.write(r)
     return r
 
