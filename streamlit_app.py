@@ -1,4 +1,5 @@
 import streamlit as st
+from langchain_core.messages import HumanMessage
 from gcsa.event import Event
 from gcsa.google_calendar import GoogleCalendar
 from gcsa.recurrence import Recurrence, DAILY, SU, SA
