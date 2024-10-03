@@ -100,7 +100,8 @@ chain_with_history = RunnableWithMessageHistory(
 import streamlit as st
 
 for msg in msgs.messages:
-    st.chat_message(msg.type).write(msg.content)
+    if (msg.type in ["ai", "human"]):
+            st.chat_message(msg.type).write(msg.content)
 
 if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
