@@ -16,7 +16,7 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
 
-llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.5)
 
 
 # Get the credintials from Secrets.
@@ -109,7 +109,7 @@ if prompt := st.chat_input():
     config = {"configurable": {"session_id": "any"}}
     response = chain_with_history.invoke({"question": prompt}, config)
     # st.chat_message("ai").write(response.content)
-    st.chat_message("ai").write(response["messages"])
+    st.chat_message("ai").write(response["messages"][-1].content)
 
 
 
