@@ -152,7 +152,7 @@ if prompt := st.chat_input():
 
 
 
-st.write(response["messages"][-1].content)
+# st.write(response["messages"][-1].content)
 
 
 
