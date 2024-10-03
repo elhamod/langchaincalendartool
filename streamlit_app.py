@@ -86,8 +86,8 @@ if len(msgs.messages) == 0:
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", "You are an AI chatbot having a conversation with a human."),
-        MessagesPlaceholder(variable_name="chat_history", optional=True),
-        MessagesPlaceholder(variable_name="agent_scratchpad", optional=True),
+        # MessagesPlaceholder(variable_name="chat_history", optional=True),
+        # MessagesPlaceholder(variable_name="agent_scratchpad", optional=True),
         MessagesPlaceholder(variable_name="history"),
         ("human", "{question}"),
     ]
@@ -99,9 +99,9 @@ chain = prompt | agent
 # Queries the LLM with full chat history.
 chain_with_history = RunnableWithMessageHistory(
     chain,
-    lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
+    lambda session_id: msgs,  # Always return the instance created earlier
     input_messages_key="question",
-    history_messages_key="chat_history"
+    history_messages_key="history"
 )
 
 for msg in msgs.messages:
