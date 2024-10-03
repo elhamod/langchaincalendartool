@@ -64,7 +64,7 @@ list_event_tool = Tool(
 def add_event(start_date, start_time, length_hours):
     from beautiful_date import hours
     start = (start_date)[start_time]
-    end = start + start_time * hours
+    end = start + length_hours * hours
     event = Event('Meeting',
                   start=start,
                   end=end)
