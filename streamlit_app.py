@@ -92,6 +92,7 @@ chain_with_history = RunnableWithMessageHistory(
     history_messages_key="history",
 )
 
+st.write("Current message history:", msgs.messages)
 
 for msg in msgs.messages:
         if (msg.type in ["ai", "human"]):
