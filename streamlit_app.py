@@ -52,7 +52,8 @@ def get_events_tool(dummy):
 event_tool = Tool(
     name="GetEvents",
     func=get_events_tool,
-    description="Useful for getting the list of events from the user's calendar."
+    description="Useful for getting the list of events from the user's calendar.", 
+    verbose=True
 )
 
 #------------
@@ -89,8 +90,7 @@ chain_with_history = RunnableWithMessageHistory(
     chain,
     lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
     input_messages_key="question",
-    history_messages_key="history", 
-    verbose=True
+    history_messages_key="history"
 )
 
 for msg in msgs.messages:
