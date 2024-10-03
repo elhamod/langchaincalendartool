@@ -10,6 +10,8 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.tools import Tool  # Use the Tool object directly
 from langchain_openai import ChatOpenAI
 import os
+from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain.agents import initialize_agent
 
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
@@ -29,18 +31,48 @@ calendar = GoogleCalendar(credentials=credentials)
 def get_events_tool(dummy):
     return list(calendar.get_events(calendar_id="mndhamod@gmail.com"))
 
-# Create a Tool object without using decorators
-event_tool = Tool(
-    name="GetEvents",
-    func=get_events_tool,
-    description="Returns events from the user's calendar"
-)
 
 
-llm_with_tools = llm.bind_tools([event_tool])
-chain = llm_with_tools | (lambda x: x.tool_calls[0]["args"]) | get_events_tool
 
-prompt = ChatPromptTemplate.from_messages(
-    [("human", "What is the first event?" )]
-)
-st.write(chain.invoke("What is the first event?"))
+agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+
+agent.run("What is the first event?")
+
+# # Construct the tool calling agent
+# agent = create_tool_calling_agent(llm, tools, prompt)
+
+# # Create an agent executor by passing in the agent and tools
+# agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+# agent_executor.invoke(
+#     {
+#         "input": "What is the first event?"
+#     }
+# )
+
+
+
+
+
+
+
+
+# # Create a Tool object without using decorators
+# event_tool = Tool(
+#     name="GetEvents",
+#     func=get_events_tool,
+#     description="Returns events from the user's calendar"
+# )
+
+
+# llm_with_tools = llm.bind_tools([event_tool])
+# chain = llm_with_tools | (lambda x: x.tool_calls[0]["args"]) | get_events_tool
+
+# prompt = ChatPromptTemplate.from_messages(
+#     [("human", "What is the first event?" )]
+# )
+# st.write(chain.invoke("What is the first event?"))
+
+
+
+
