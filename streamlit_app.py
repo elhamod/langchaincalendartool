@@ -101,13 +101,9 @@ if prompt := st.chat_input():
     # Add human message
     st.chat_message("human").write(prompt)
     msgs.add_user_message(prompt)
-    # msg_cache = msgs.get_messages()
-    # msgs.clear()
 
     config = {"configurable": {"session_id": "any"}}
     response = chain_with_history.invoke({"question": prompt}, config)
-
-    # msgs.add_messages(msg_cache)
 
     # Add AI response.
     response = response["messages"][-1].content
