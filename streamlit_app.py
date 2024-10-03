@@ -46,7 +46,7 @@ event_tool = Tool(
 tools = [event_tool]
 
 # agent = initialize_agent(tools, llm    , verbose=True)
-agent = create_react_agent(llm, tools , verbose=True)
+agent = create_react_agent(llm, tools )
 
 agent.run("What is the first event?")
 
