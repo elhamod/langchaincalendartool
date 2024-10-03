@@ -50,10 +50,10 @@ agent_executor = create_react_agent(llm, tools )
 
 # response = agent.run("What is the first event?")
 response  = agent_executor.invoke(
-    {
-        "input": "What is the first event?"
-    }
+{"messages": [HumanMessage(content="What is the first event?")]}
 )
+
+
 
 
 
