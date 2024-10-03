@@ -26,7 +26,7 @@ credentials = service_account.Credentials.from_service_account_info(
 calendar = GoogleCalendar(credentials=credentials)
     
 # Define the tool manually
-def get_events_tool():
+def get_events_tool(dummy):
     return list(calendar.get_events(calendar_id="mndhamod@gmail.com"))
 
 # Create a Tool object without using decorators
