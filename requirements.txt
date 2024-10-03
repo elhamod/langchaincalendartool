@@ -2,3 +2,5 @@ streamlit
 gcsa
 beautiful_date
 langchain_openai
+langchain
+
