@@ -100,7 +100,7 @@ response  = agent_executor.invoke(
 
 
 
-st.write(response])
+st.write(response)
 
 
 
