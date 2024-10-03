@@ -2,6 +2,7 @@ import streamlit as st
 from gcsa.event import Event
 from gcsa.google_calendar import GoogleCalendar
 from gcsa.recurrence import Recurrence, DAILY, SU, SA
+from langchain_core.tools import Tool
 
 from beautiful_date import Jan, Apr, Sept
 import json
