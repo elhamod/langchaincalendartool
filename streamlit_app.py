@@ -132,14 +132,14 @@ for msg in msgs.messages:
         if (msg.type in ["ai", "human"]):
                 st.chat_message(msg.type).write(msg.content)
 
-if prompt := st.chat_input():
+if entered_prompt := st.chat_input():
     # Add human message
-    st.chat_message("human").write(prompt)
-    msgs.add_user_message(prompt)
+    st.chat_message("human").write(entered_prompt)
+    msgs.add_user_message(entered_prompt)
 
     config = {"configurable": {"session_id": "any"}} #, 'callbacks': [ConsoleCallbackHandler()]
-    # response = chain_with_history.invoke({"question": prompt}, config)
-    response = agent.invoke({"input": prompt})
+    # response = chain_with_history.invoke({"question": entered_prompt}, config)
+    response = agent.invoke({"input": entered_prompt})
 
     # Add AI response.
     response = response["messages"][-1].content
