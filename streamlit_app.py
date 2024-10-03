@@ -12,6 +12,7 @@ from langchain_openai import ChatOpenAI
 import os
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.agents import initialize_agent
+from langchain.agents import AgentType
 
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
