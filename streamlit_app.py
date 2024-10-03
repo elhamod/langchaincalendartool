@@ -87,12 +87,10 @@ chain = prompt | agent_executor
 # Queries the LLM with full chat history.
 chain_with_history = RunnableWithMessageHistory(
     chain,
-    lambda session_id: msgs,  # Always return the instance created earlier
+    lambda session_id: None,  # Always return the instance created earlier
     input_messages_key="question",
     history_messages_key="history",
 )
-
-st.write("Current message history:", msgs.messages)
 
 for msg in msgs.messages:
         if (msg.type in ["ai", "human"]):
