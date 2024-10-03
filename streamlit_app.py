@@ -7,6 +7,8 @@ from beautiful_date import Jan, Apr, Sept
 import json
 import os
 
+import streamlit as st
+
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.prebuilt import create_react_agent
@@ -91,18 +93,19 @@ chain_with_history = RunnableWithMessageHistory(
 )
 
 
-import streamlit as st
-
 for msg in msgs.messages:
     if (msg.type in ["ai", "human"]):
             st.chat_message(msg.type).write(msg.content)
 
 if prompt := st.chat_input():
     # Add human message
+    msgs.add_human_message(prompt)
     st.chat_message("human").write(prompt)
 
     config = {"configurable": {"session_id": "any"}}
     response = chain_with_history.invoke({"question": prompt}, config)
 
     # Add AI response.
-    st.chat_message("ai").write(response["messages"][-1].content)
+    response = response["messages"][-1].content
+    msgs.add_ai_message(response)
+    st.chat_message("ai").write(response)
