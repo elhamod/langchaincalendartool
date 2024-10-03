@@ -101,7 +101,7 @@ chain_with_history = RunnableWithMessageHistory(
     chain,
     lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
     input_messages_key="question",
-    history_messages_key="history"
+    history_messages_key="chat_history"
 )
 
 for msg in msgs.messages:
