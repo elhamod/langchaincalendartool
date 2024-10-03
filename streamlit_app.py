@@ -139,7 +139,7 @@ if entered_prompt := st.chat_input():
 
     config = {"configurable": {"session_id": "any"}} #, 'callbacks': [ConsoleCallbackHandler()]
     # response = chain_with_history.invoke({"question": entered_prompt}, config)
-    response = agent.invoke({"input": entered_prompt})
+    response = agent.invoke({"input": entered_prompt, "chat_history": "AI: what's up?",})
 
     # Add AI response.
     response = response["messages"][-1].content
