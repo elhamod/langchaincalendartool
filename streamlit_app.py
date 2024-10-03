@@ -9,7 +9,7 @@ import os
 
 import streamlit as st
 
-from langchain_core.runnables import ConfigurableField
+from langchain_core.runnables.utils import ConfigurableFieldSpec
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.prebuilt import create_react_agent
