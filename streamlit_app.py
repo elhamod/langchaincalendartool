@@ -66,8 +66,6 @@ agent_executor = create_react_agent(llm, tools )
 #--------------------
 
 
-st.write("thanks")
-
 # specify your own session_state key for storing messages
 msgs = StreamlitChatMessageHistory(key="special_app_key")
 
@@ -96,6 +94,7 @@ chain_with_history = RunnableWithMessageHistory(
 for msg in msgs.messages:
     if (msg.type in ["ai", "human"]):
             st.chat_message(msg.type).write(msg.content)
+            st.chat_message(msg.type).write("hi")
 
 if prompt := st.chat_input():
     # Add human message
