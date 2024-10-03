@@ -6,6 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from beautiful_date import Jan, Apr, Sept
 import json
 from google.oauth2 import service_account
+from langchain_core.output_parsers import StrOutputParser
 from langchain_core.tools import Tool  # Use the Tool object directly
 from langchain_openai import ChatOpenAI
 import os
@@ -41,4 +42,4 @@ llm_with_tools = llm.bind_tools([event_tool])
 prompt = ChatPromptTemplate.from_messages(
     [("human", "What is the first event?" )]
 )
-st.write(prompt | llm_with_tools)
+st.write(prompt | llm_with_tools | StrOutputParser)
