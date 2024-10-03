@@ -24,6 +24,9 @@ from langchain.agents import AgentType
 from langchain_community.chat_message_histories import (
     StreamlitChatMessageHistory,
 )
+from langchain_community.callbacks.streamlit import (
+    StreamlitCallbackHandler,
+)
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
