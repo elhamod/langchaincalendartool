@@ -177,7 +177,7 @@ if entered_prompt := st.chat_input():
     # response = agent.invoke({"messages": [HumanMessage(content=entered_prompt)]})
 
     # Add AI response.
-    response = response["messages"][-1].content
+    # response = response["messages"][-1].content
     st.chat_message("ai").write(response)
     # msgs.add_ai_message(response)
     
