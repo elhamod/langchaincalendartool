@@ -105,20 +105,20 @@ msgs = StreamlitChatMessageHistory(key="special_app_key")
 if len(msgs.messages) == 0:
     msgs.add_ai_message("How can I help you?")
 
-prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", "You are an AI chatbot having a conversation with a human."),
-        # MessagesPlaceholder(variable_name="chat_history", optional=True),
-        # MessagesPlaceholder(variable_name="agent_scratchpad", optional=True),
-        MessagesPlaceholder(variable_name="history"),
-        ("human", "{question}"),
-    ]
-)
+# prompt = ChatPromptTemplate.from_messages(
+#     [
+#         ("system", "You are an AI chatbot having a conversation with a human."),
+#         # MessagesPlaceholder(variable_name="chat_history", optional=True),
+#         # MessagesPlaceholder(variable_name="agent_scratchpad", optional=True),
+#         MessagesPlaceholder(variable_name="history"),
+#         ("human", "{question}"),
+#     ]
+# )
 
 
 
-# A chain that takes the prompt and processes it through the agent (LLM + tools)
-chain = prompt | agent
+# # A chain that takes the prompt and processes it through the agent (LLM + tools)
+# chain = prompt | agent
 
 # Queries the LLM with full chat history.
 chain_with_history = RunnableWithMessageHistory(
