@@ -93,13 +93,12 @@ chain_with_history = RunnableWithMessageHistory(
 )
 
 
-for msg in msgs.messages:
-    if (msg.type in ["ai", "human"]):
-            st.chat_message(msg.type).write(msg.content)
+# for msg in msgs.messages:
+#     if (msg.type in ["ai", "human"]):
+#             st.chat_message(msg.type).write(msg.content)
 
 if prompt := st.chat_input():
     # Add human message
-    msgs.add_human_message(prompt)
     st.chat_message("human").write(prompt)
 
     config = {"configurable": {"session_id": "any"}}
@@ -107,5 +106,4 @@ if prompt := st.chat_input():
 
     # Add AI response.
     response = response["messages"][-1].content
-    msgs.add_ai_message(response)
     st.chat_message("ai").write(response)
