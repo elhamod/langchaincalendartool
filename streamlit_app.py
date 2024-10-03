@@ -58,7 +58,7 @@ event_tool = Tool(
 tools = [event_tool]
 
 # Create the LLM
-llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.2)
+llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
 
 agent_executor = create_react_agent(llm, tools )
 
@@ -92,10 +92,10 @@ chain_with_history = RunnableWithMessageHistory(
     history_messages_key="history",
 )
 
-
-for msg in msgs.messages:
-    if (msg.type in ["ai", "human"]):
-            st.chat_message(msg.type).write(msg.content)
+if len(msgs.messages) == 1:
+    for msg in msgs.messages:
+        if (msg.type in ["ai", "human"]):
+                st.chat_message(msg.type).write(msg.content)
 
 if prompt := st.chat_input():
     # Add human message
