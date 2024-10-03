@@ -34,6 +34,15 @@ def get_events_tool(dummy):
 
 
 
+# Create a Tool object without using decorators
+event_tool = Tool(
+    name="GetEvents",
+    func=get_events_tool,
+    description="Returns events from the user's calendar"
+)
+
+tools = [event_tool]
+
 agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
 
 agent.run("What is the first event?")
