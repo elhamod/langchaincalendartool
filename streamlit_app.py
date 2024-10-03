@@ -64,18 +64,12 @@ llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
 
 
 agent = create_react_agent(llm, tools )
-agent = AgentExecutor.from_agent_and_tools(
-    agent=agent,  # type: ignore
-    tools=tools,
-    # early_stopping_method="generate",
-    # callbacks=callbacks, # type: ignore
-    verbose=True,
-    # memory=StreamlitChatMessageHistory()
-    # handle_parsing_errors=True,
-    # return_intermediate_steps=True,
-)
+# agent = AgentExecutor.from_agent_and_tools(
+#     agent=agent,  # type: ignore
+#     tools=tools,
+#     verbose=True,
+# )
 
-st.write(agent.memory)
 
 #--------------------
 
@@ -96,13 +90,15 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+
+
 # A chain that takes the prompt and processes it through the agent (LLM + tools)
 chain = prompt | agent
 
 # Queries the LLM with full chat history.
 chain_with_history = RunnableWithMessageHistory(
     chain,
-    lambda session_id: msgs,  # Always return the instance created earlier
+    lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
     input_messages_key="question",
     history_messages_key="history"
 )
@@ -116,7 +112,7 @@ if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
     msgs.add_user_message(prompt)
 
-    config = {"configurable": {"session_id": "any"}, 'callbacks': [ConsoleCallbackHandler()]}
+    config = {"configurable": {"session_id": "any"}} #, 'callbacks': [ConsoleCallbackHandler()]
     response = chain_with_history.invoke({"question": prompt}, config)
 
     # Add AI response.
