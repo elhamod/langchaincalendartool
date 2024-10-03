@@ -38,8 +38,9 @@ event_tool = Tool(
 
 
 llm_with_tools = llm.bind_tools([event_tool])
+chain = llm_with_tools | (lambda x: x.tool_calls[0]["args"]) | get_events_tool
 
 prompt = ChatPromptTemplate.from_messages(
     [("human", "What is the first event?" )]
 )
-st.write(llm_with_tools.invoke("What is the first event?"))
+st.write(chain.invoke("What is the first event?"))
