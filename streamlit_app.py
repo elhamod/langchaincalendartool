@@ -77,7 +77,7 @@ if len(msgs.messages) == 0:
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", "You are an AI chatbot having a conversation with a human."),
-        MessagesPlaceholder(variable_name="history"),
+        # MessagesPlaceholder(variable_name="history"),
         ("human", "{question}"),
     ]
 )
@@ -86,12 +86,12 @@ prompt = ChatPromptTemplate.from_messages(
 chain = prompt | agent_executor
 
 # Queries the LLM with full chat history.
-# chain_with_history = RunnableWithMessageHistory(
-#     chain,
-#     lambda session_id: msgs,  # Always return the instance created earlier
-#     input_messages_key="question",
-#     history_messages_key="history",
-# )
+chain_with_history = RunnableWithMessageHistory(
+    chain,
+    lambda session_id: msgs,  # Always return the instance created earlier
+    input_messages_key="question",
+    # history_messages_key="history",
+)
 
 for msg in msgs.messages:
         if (msg.type in ["ai", "human"]):
@@ -101,8 +101,8 @@ if prompt := st.chat_input():
     # Add human message
     st.chat_message("human").write(prompt)
 
-    config = {"configurable": {"session_id": "special_app_key"}}
-    response = chain.invoke({"question": prompt}, config)
+    config = {"configurable": {"session_id": "any"}}
+    response = chain_with_history.invoke({"question": prompt}, config)
 
     # Add AI response.
     response = response["messages"][-1].content
