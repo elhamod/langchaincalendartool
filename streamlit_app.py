@@ -2,7 +2,7 @@ import streamlit as st
 from gcsa.event import Event
 from gcsa.google_calendar import GoogleCalendar
 from gcsa.recurrence import Recurrence, DAILY, SU, SA
-from langchain_core.prompts import ChatPromptTemplatef
+from langchain_core.prompts import ChatPromptTemplate
 from beautiful_date import Jan, Apr, Sept
 from langgraph.prebuilt import create_react_agent
 import json
