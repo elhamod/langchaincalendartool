@@ -169,16 +169,17 @@ for msg in msgs.messages:
 if entered_prompt := st.chat_input():
     # Add human message
     st.chat_message("human").write(entered_prompt)
-    # msgs.add_user_message(entered_prompt)
+    msgs.add_user_message(entered_prompt)
+
 
     config = {"configurable": {"session_id": "any"}} #, 'callbacks': [ConsoleCallbackHandler()]
     # response = chain_with_history.invoke({"question": entered_prompt}, config)
-    response = agent.invoke({"input": entered_prompt})
+    response = agent.invoke({"input": entered_prompt, 'callbacks': [ConsoleCallbackHandler()})
     # response = agent.invoke({"messages": [HumanMessage(content=entered_prompt)]})
 
     # Add AI response.
     # response = response["messages"][-1].content
     response = response["output"]
     st.chat_message("ai").write(response)
-    # msgs.add_ai_message(response)
+    msgs.add_ai_message(response)
     
