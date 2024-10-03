@@ -1,23 +1,32 @@
 import streamlit as st
-from langchain_core.messages import HumanMessage
 from gcsa.event import Event
 from gcsa.google_calendar import GoogleCalendar
 from gcsa.recurrence import Recurrence, DAILY, SU, SA
-from langchain_core.prompts import ChatPromptTemplate
-from beautiful_date import Jan, Apr, Sept
-from langgraph.prebuilt import create_react_agent
-import json
 from google.oauth2 import service_account
+
+from beautiful_date import Jan, Apr, Sept
+import json
+import os
+
+from langchain_core.messages import HumanMessage
+from langchain_core.prompts import ChatPromptTemplate
+from langgraph.prebuilt import create_react_agent
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.tools import Tool  # Use the Tool object directly
 from langchain_openai import ChatOpenAI
-import os
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
+from langchain_community.chat_message_histories import (
+    StreamlitChatMessageHistory,
+)
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.5)
 
+
+## Google Calendar
 
 # Get the credintials from Secrets.
 credentials = service_account.Credentials.from_service_account_info(
@@ -27,56 +36,43 @@ credentials = service_account.Credentials.from_service_account_info(
 
 # Create the GoogleCalendar.
 calendar = GoogleCalendar(credentials=credentials)
-    
-# Define the tool manually
+
+
+#-------
+### IMPORTANT: Here is an example of a listing event tool. For other features, replicate this code and edit
+
+# Define the tool 
 def get_events_tool(dummy):
     return list(calendar.get_events(calendar_id="mndhamod@gmail.com"))
 
-
-
-
-# Create a Tool object without using decorators
+# Create a Tool object 
 event_tool = Tool(
     name="GetEvents",
     func=get_events_tool,
     description="Useful for getting the list of events from the user's calendar."
 )
 
+#------------
+#IMPORTANT: Update this list with the new tools
 tools = [event_tool]
 
-# agent = initialize_agent(tools, llm    , verbose=True)
+# Create the LLM
+llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.5)
+
 agent_executor = create_react_agent(llm, tools )
-
-
-### This works!!!
-# response = agent.run("What is the first event?")
-# response  = agent_executor.invoke(
-# {"messages": [HumanMessage(content="What is the first event?")]}
-# )
-
-
 
 
 
 #--------------------
 
 
-# Just following this: https://python.langchain.com/docs/integrations/memory/streamlit_chat_message_history/
-import streamlit as st
-from langchain_community.chat_message_histories import (
-    StreamlitChatMessageHistory,
-)
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_openai import ChatOpenAI
 
 
-# # Optionally, specify your own session_state key for storing messages
+# specify your own session_state key for storing messages
 msgs = StreamlitChatMessageHistory(key="special_app_key")
 
 if len(msgs.messages) == 0:
     msgs.add_ai_message("How can I help you?")
-
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -86,9 +82,10 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+# A chain that takes the prompt and processes it through the agent (LLM + tools)
+chain = prompt | agent_executor
 
-chain = prompt | agent_executor # llm
-
+# Queries the LLM with full chat history.
 chain_with_history = RunnableWithMessageHistory(
     chain,
     lambda session_id: msgs,  # Always return the instance created earlier
@@ -96,65 +93,16 @@ chain_with_history = RunnableWithMessageHistory(
     history_messages_key="history",
 )
 
-
-import streamlit as st
-
 for msg in msgs.messages:
     if (msg.type in ["ai", "human"]):
             st.chat_message(msg.type).write(msg.content)
 
 if prompt := st.chat_input():
+    # Add human message
     st.chat_message("human").write(prompt)
 
-    # As usual, new messages are added to StreamlitChatMessageHistory when the Chain is called.
     config = {"configurable": {"session_id": "any"}}
     response = chain_with_history.invoke({"question": prompt}, config)
-    # st.chat_message("ai").write(response.content)
+
+    # Add AI response.
     st.chat_message("ai").write(response["messages"][-1].content)
-
-
-
-##------
-
-
-# # Construct the tool calling agent
-# agent = create_tool_calling_agent(llm, tools, prompt)
-
-# # Create an agent executor by passing in the agent and tools
-# agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-
-# agent_executor.invoke(
-#     {
-#         "input": "What is the first event?"
-#     }
-# )
-
-
-
-
-
-
-
-
-# # Create a Tool object without using decorators
-# event_tool = Tool(
-#     name="GetEvents",
-#     func=get_events_tool,
-#     description="Returns events from the user's calendar"
-# )
-
-
-# llm_with_tools = llm.bind_tools([event_tool])
-# chain = llm_with_tools | (lambda x: x.tool_calls[0]["args"]) | get_events_tool
-
-# prompt = ChatPromptTemplate.from_messages(
-#     [("human", "What is the first event?" )]
-# )
-
-
-
-# st.write(response["messages"][-1].content)
-
-
-
-
