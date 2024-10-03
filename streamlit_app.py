@@ -62,7 +62,7 @@ tools = [event_tool]
 llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
 
 agent_executor = create_react_agent(llm, tools )
-
+agent_executor = AgentExecutor.from_agent_and_tools(agent_executor, tools, verbose=True)
 
 #--------------------
 
@@ -89,8 +89,7 @@ chain_with_history = RunnableWithMessageHistory(
     chain,
     lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
     input_messages_key="question",
-    history_messages_key="history",
-    verbose=True
+    history_messages_key="history"
 )
 
 for msg in msgs.messages:
