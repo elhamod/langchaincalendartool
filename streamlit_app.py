@@ -61,8 +61,8 @@ tools = [event_tool]
 # Create the LLM
 llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
 
-agent_executor = create_react_agent(llm, tools, verbose=True )
-
+agent_executor = create_react_agent(llm, tools )
+agent_executor = AgentExecutor(agent=agent_executor, tools=tools, verbose=True)
 
 
 #--------------------
