@@ -30,12 +30,18 @@ credentials = service_account.Credentials.from_service_account_info(
 # Create the GoogleCalendar.
 calendar = GoogleCalendar(credentials=credentials)
     
-@tool
-def GetEvents():
-    """Returns events from my calendar"""
-     return list(calendar.get_events(calendar_id="mndhamod@gmail.com"))
+# Define the tool manually
+def get_events_tool():
+    return list(calendar.get_events(calendar_id="mndhamod@gmail.com"))
+
+# Create a Tool object without using decorators
+event_tool = Tool(
+    name="GetEvents",
+    func=get_events_tool,
+    description="Returns events from the user's calendar"
+)
 
 
-llm_with_tools = llm.bind_tools([GetEvents])
+llm_with_tools = llm.bind_tools([event_tool])
 
 st.write(llm_with_tools("What is the first event?")
