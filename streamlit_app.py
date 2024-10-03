@@ -87,9 +87,14 @@ chain = prompt | agent_executor
 # Queries the LLM with full chat history.
 chain_with_history = RunnableWithMessageHistory(
     chain,
-    lambda session_id: None,  # Always return the instance created earlier
+    lambda session_id: msgs,  # Always return the instance created earlier
     input_messages_key="question",
     history_messages_key="history",
+    history_factory_config=[
+        ConfigurableFieldSpec(
+            is_shared=True,
+        ),
+    ],
 )
 
 for msg in msgs.messages:
