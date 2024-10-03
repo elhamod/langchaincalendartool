@@ -178,6 +178,7 @@ if entered_prompt := st.chat_input():
 
     # Add AI response.
     # response = response["messages"][-1].content
+    response = response.output
     st.chat_message("ai").write(response)
     # msgs.add_ai_message(response)
     
