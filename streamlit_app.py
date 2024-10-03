@@ -70,10 +70,12 @@ agent = AgentExecutor.from_agent_and_tools(
     # early_stopping_method="generate",
     # callbacks=callbacks, # type: ignore
     verbose=True,
-    memory=StreamlitChatMessageHistory()
+    # memory=StreamlitChatMessageHistory()
     # handle_parsing_errors=True,
     # return_intermediate_steps=True,
 )
+
+st.write(agent.memory)
 
 #--------------------
 
