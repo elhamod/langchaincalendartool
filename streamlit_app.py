@@ -30,7 +30,7 @@ credentials = service_account.Credentials.from_service_account_info(
 # Create the GoogleCalendar.
 calendar = GoogleCalendar(credentials=credentials)
     
-
+@tool
 class GetEvents(BaseModel):
     """Returns events from my calendar"""
      return list(calendar.get_events(calendar_id="mndhamod@gmail.com"))
