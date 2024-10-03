@@ -25,6 +25,7 @@ from langchain_community.chat_message_histories import (
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
+from langchain.callbacks.tracers import ConsoleCallbackHandler
 
 
 
@@ -101,7 +102,7 @@ if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
     msgs.add_user_message(prompt)
 
-    config = {"configurable": {"session_id": "any"}}
+    config = {"configurable": {"session_id": "any"}'callbacks': [ConsoleCallbackHandler()]}
     response = chain_with_history.invoke({"question": prompt}, config)
 
     # Add AI response.
