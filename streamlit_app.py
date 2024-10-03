@@ -120,13 +120,13 @@ if len(msgs.messages) == 0:
 # # A chain that takes the prompt and processes it through the agent (LLM + tools)
 # chain = prompt | agent
 
-# Queries the LLM with full chat history.
-chain_with_history = RunnableWithMessageHistory(
-    chain,
-    lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
-    input_messages_key="question",
-    history_messages_key="history"
-)
+# # Queries the LLM with full chat history.
+# chain_with_history = RunnableWithMessageHistory(
+#     chain,
+#     lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
+#     input_messages_key="question",
+#     history_messages_key="history"
+# )
 
 for msg in msgs.messages:
         if (msg.type in ["ai", "human"]):
