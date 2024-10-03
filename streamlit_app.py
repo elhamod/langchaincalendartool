@@ -39,7 +39,7 @@ def get_events_tool(dummy):
 event_tool = Tool(
     name="GetEvents",
     func=get_events_tool,
-    description="Returns the user's events as a list."
+    description="Useful for getting the list of events from the user's calendar."
 )
 
 tools = [event_tool]
