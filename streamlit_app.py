@@ -100,7 +100,7 @@ response  = agent_executor.invoke(
 
 
 
-st.write(response["messages][-1][content])
+st.write(response["messages"][-1][content])
 
 
 
