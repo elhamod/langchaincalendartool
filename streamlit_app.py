@@ -65,7 +65,7 @@ llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
 
 agent = create_react_agent(llm, tools )
 agent = AgentExecutor.from_agent_and_tools(
-    agent=_agent,  # type: ignore
+    agent=agent,  # type: ignore
     tools=tools,
     # early_stopping_method="generate",
     # callbacks=callbacks, # type: ignore
