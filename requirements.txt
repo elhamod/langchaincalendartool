@@ -3,4 +3,5 @@ gcsa
 beautiful_date
 langchain_openai
 langchain
+langchain_community
 langgraph
