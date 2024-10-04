@@ -1,19 +1,20 @@
+# gcsa imports
 from gcsa.event import Event
 from gcsa.google_calendar import GoogleCalendar
 from gcsa.recurrence import Recurrence, DAILY, SU, SA
 from google.oauth2 import service_account
 
+# misc imports
 from beautiful_date import Jan, Apr, Sept, Oct
 import json
 import os
 from datetime import date, datetime
 from beautiful_date import hours
 
-
+# langchain imports
 from langchain_core.runnables.utils import ConfigurableFieldSpec
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
-# from langgraph.prebuilt import create_react_agent
 from langchain.agents.react.agent import create_react_agent
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.tools import Tool, StructuredTool  # Use the Tool object directly
@@ -32,14 +33,15 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
 from langchain.callbacks.tracers import ConsoleCallbackHandler
 from pydantic import BaseModel, Field
+
 import streamlit as st
 
 
 
 
 
-
-## Google Calendar
+##-------------------
+## Connecting to the Google Calendar through an API
 
 # Get the credintials from Secrets.
 credentials = service_account.Credentials.from_service_account_info(
@@ -50,11 +52,10 @@ credentials = service_account.Credentials.from_service_account_info(
 # Create the GoogleCalendar.
 calendar = GoogleCalendar(credentials=credentials)
 
-
-
 #-------
-### IMPORTANT: Here is an example of a listing event tool. For other features, replicate this code and edit
+### Event listing tool
 
+# Parameters needed to look for an event
 class GetEventargs(BaseModel):
     from_datetime: datetime = Field(description="beginning of date range to retrieve events")
     to_datetime: datetime = Field(description="end of date range to retrieve events")
@@ -76,7 +77,14 @@ list_event_tool = StructuredTool(
 #------------
 
 #-------
-### IMPORTANT: For addign event: 
+### Event adding tool
+
+# Parameters needed to look for an event
+class AddEventargs(BaseModel):
+    start_date_time: datetime = Field(description="start date and time of event")
+    length_hours: int = Field(description="length of event")
+    event_name: str = Field(description="name of the event")
+
 
 # Define the tool 
 def add_event(start_date_time, length_hours, event_name):
@@ -88,11 +96,6 @@ def add_event(start_date_time, length_hours, event_name):
     return calendar.add_event(event, calendar_id="mndhamod@gmail.com")
 
 # Create a Tool object 
-class AddEventargs(BaseModel):
-    start_date_time: datetime = Field(description="start date and time of event")
-    length_hours: int = Field(description="length of event")
-    event_name: str = Field(description="name of the event")
-
 add_event_tool = StructuredTool(
     name="AddEvent",
     func=add_event,
@@ -102,12 +105,16 @@ add_event_tool = StructuredTool(
 
 #------------
 
-#IMPORTANT: Update this list with the new tools
+##Update this list with the new tools
 tools = [list_event_tool, add_event_tool]
+
+#-----------
+
 
 # Create the LLM
 llm = ChatOpenAI(api_key=st.secrets["OPENAI_API_KEY"], temperature=0.1)
 
+# Messages used by the chatbot
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", "You are a helpful Google Calendar assistant"),
@@ -118,71 +125,40 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 
+# Creating the agent that will integrate the provided calendar tool with the LLM.
 agent = create_tool_calling_agent(llm, tools, prompt)
-# agent = create_react_agent(llm, tools, prompt=prompt)
-
-# agent = create_react_agent(llm, tools )
 agent = AgentExecutor(
-    agent=agent,  # type: ignore
+    agent=agent, 
     tools=tools,
     # verbose=True,
-    # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,  # Ensure this is a valid AgentType
-    # tools=tools,
-    # llm=llm,
 )
-
-
 
 #--------------------
 
 
-# specify your own session_state key for storing messages
+# Storing message history
 msgs = StreamlitChatMessageHistory(key="special_app_key")
 
+# Load the first AI message
 if len(msgs.messages) == 0:
     msgs.add_ai_message("How can I help you?")
 
-# prompt = ChatPromptTemplate.from_messages(
-#     [
-#         ("system", "You are an AI chatbot having a conversation with a human."),
-#         # MessagesPlaceholder(variable_name="chat_history", optional=True),
-#         # MessagesPlaceholder(variable_name="agent_scratchpad", optional=True),
-#         MessagesPlaceholder(variable_name="history"),
-#         ("human", "{question}"),
-#     ]
-# )
-
-
-
-# # A chain that takes the prompt and processes it through the agent (LLM + tools)
-# chain = prompt | agent
-
-# # Queries the LLM with full chat history.
-# chain_with_history = RunnableWithMessageHistory(
-#     chain,
-#     lambda session_id: StreamlitChatMessageHistory(),  # Always return the instance created earlier
-#     input_messages_key="question",
-#     history_messages_key="history"
-# )
-
+# Add the rest of the conversation
 for msg in msgs.messages:
         if (msg.type in ["ai", "human"]):
                 st.chat_message(msg.type).write(msg.content)
 
+# When the user enters a new prompt
 if entered_prompt := st.chat_input():
     # Add human message
     st.chat_message("human").write(entered_prompt)
     msgs.add_user_message(entered_prompt)
 
-
-    config = {"configurable": {"session_id": "any"}} #, 'callbacks': [ConsoleCallbackHandler()]
-    # response = chain_with_history.invoke({"question": entered_prompt}, config)
+    # get a response from the agent
     st_callback = StreamlitCallbackHandler(st.container())
-    response = agent.invoke({"input": entered_prompt}, {"callbacks": [st_callback, ConsoleCallbackHandler()]})#, {'callbacks': [ConsoleCallbackHandler()]})
-    # response = agent.invoke({"messages": [HumanMessage(content=entered_prompt)]})
+    response = agent.invoke({"input": entered_prompt}, {"callbacks": [st_callback, ConsoleCallbackHandler()]})
 
     # Add AI response.
-    # response = response["messages"][-1].content
     response = response["output"]
     st.chat_message("ai").write(response)
     msgs.add_ai_message(response)
